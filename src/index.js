@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require('path');
 const mysql = require("mysql");
 const env = require("dotenv");
 
@@ -12,6 +13,13 @@ const db = mysql.createConnection({
     databse: process.env.DATABASE
 })
 
+//__dirname gives acces to the current directory
+const publicDirectory = path.join(__dirname, '/public');
+app.use(express.static(publicDirectory));
+
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, '/views'));
+
 db.connect( (error) => {
     if(error){
         console.log(error);
@@ -24,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
 app.get('/', (req, res) => {
-    res.send('<h1>Home Page</h1>');
+    res.render('index');
 });
 
 app.listen(5001, () => {
